@@ -5,7 +5,7 @@ tic
 % calibrationResults20thCentUncertCalib.m
 load('../Data/uncertainty_final.mat');
 
-clim=create20thCenturyClimate_Spinup_24();
+clim=create20thCenturyClimate_();
 final_20thCentYear=clim(end,3);
 years_clim=(clim(1,3):clim(end,3))';
 n_spinupyears=20; %number of years average climate spinup of the model
@@ -14,32 +14,28 @@ n_reps=2; %number of times the 20th Cent dataset will be permutated in its re-or
 climate=create20thCenturyClimate_Spinup_20thCent_RandYrBlocks_24(n_spinupyears,n_reps);
     
 results=struct;
-ni_MC = 1000;
+ni_MC=1000;
 a=2.45;
 b=38.03;
 C_IN=0.001;
 AWC_mod=1.87;
 
-P_summer_range=[-0.4    0.4];
-P_winter_range=[-0.4    0.0];
-T_mod_summer_range=[0 2];
-T_mod_winter_range=[-3 1];
-RH_range=[-0.3  0.0];
+P_mod_summer_mu=-0.0144;
+P_mod_summer_sigma=0.19*2;
 
-P_mod_summer_mu=mean(P_summer_range);
-P_mod_summer_sigma=(P_summer_range(2)-P_mod_summer_mu)/2;
+P_mod_winter_mu=-0.1874;
+P_mod_winter_sigma=0.0574*2;
 
-P_mod_winter_mu=mean(P_winter_range);
-P_mod_winter_sigma=(P_winter_range(2)-P_mod_winter_mu)/2;
+T_mod_summer_mu=0.0;
+T_mod_summer_sigma=0.5*2;
+T_mod_summer_range=[-2 -2];
 
-T_mod_summer_mu=mean(T_mod_summer_range);
-T_mod_summer_sigma=(T_mod_summer_range(2)-T_mod_summer_mu)/2;
+T_mod_winter_mu=-0.0;
+T_mod_winter_sigma=0.5*2;
+T_mod_winter_range=[-2 2];
 
-T_mod_winter_mu=mean(T_mod_winter_range);
-T_mod_winter_sigma=(T_mod_winter_range(2)-T_mod_winter_mu)/2;
-
-RH_mod_mu=mean(RH_range);
-RH_mod_sigma=(RH_range(2)-RH_mod_mu)/2;
+RH_mod_mu=-0.188;
+RH_mod_sigma=0.0531*2;
 
 results.MD_max_v=NaN(1,ni_MC);
 results.summer_begin_v=NaN(1,ni_MC);
@@ -65,6 +61,7 @@ results.core_rmse=NaN(1,ni_MC);
 results.core_rmse_mm=NaN(1,ni_MC);
 
 results.meanCore_meanYearArag_diff=NaN(1,ni_MC);
+% % results=zeros(ni_MC,5);
 
 for i_MC = 1 : ni_MC
         
@@ -92,10 +89,10 @@ for i_MC = 1 : ni_MC
     P_mod_winter=(P_mod_winter_mu+randn*P_mod_winter_sigma);
     results.P_mod_winter_v(i_MC)=P_mod_winter;
     
-    T_mod_summer=T_mod_summer_mu+randn*T_mod_summer_sigma;
+    T_mod_summer=(T_mod_summer_mu+randn*T_mod_summer_sigma);
     results.T_mod_summer_v(i_MC)=T_mod_summer;
     
-    T_mod_winter=T_mod_winter_mu+randn*T_mod_winter_sigma;
+    T_mod_winter=(T_mod_winter_mu+randn*T_mod_winter_sigma);
     results.T_mod_winter_v(i_MC)=T_mod_winter;
     
     RH_mod=(RH_mod_mu+randn*RH_mod_sigma);
@@ -131,7 +128,7 @@ for i_MC = 1 : ni_MC
     
     i_MC
 
-    climate=create20thCenturyClimate_Spinup_20thCent_RandYrBlocks_24(n_spinupyears,n_reps);
+    climate=create20thCenturyClimate_Spinup_20thCent_RandYrBlocks(n_spinupyears,n_reps);
 end
 
 total_years=size(results.trail_avg_year_summer_arag,1);
@@ -146,18 +143,17 @@ results.mean_arag_20thCent=mean(results.year_summer_arag(n_spinupyears+20:find(y
 results.mean_arag_no_mod=mean(results.year_summer_arag(find(yearsi==2018)+20:find(yearsi==floor(mean([2018 2256]))),:),1);
 results.mean_arag_mod=mean(results.year_summer_arag(find(yearsi==floor(mean([2018 2256])))+20:end,:),1);
 
+
 %% stuff for naming file
 
 
-filename=strcat('../../Results/MCres_recons_ClimMDaragTiming'...
+filename=strcat('../Results/MCres_recons_ClimMDaragTiming(narrowClimRanges_seasonalTemp)'...
     ,datestr(now,'_ddmmmm_yyyy_HH MM'),'_i=',num2str(ni_MC),'.mat');
-
 
 save(filename,'results','-v7.3');
 toc
 
 %% reconstruction
-load(filename)
 
 goal=-2.4;
 uncertainty=0.2;
@@ -189,29 +185,148 @@ title('beginning of summer')
 subplot(4,1,4)
 histogram(summer_len_recons)
 title('Length of summer')
+%% 
+load('D:\MCres_Castor\20thCentReconstResults(loopsClim&Uncert)\V_3\MCres_recons_ClimMDaragTiming(narrowClimRanges_seasonalTemp)_02November_2020_21 35_i=1000.mat')
 
-figure
-subplot(4,1,1)
+mean_P_mod_summer_recons=mean(P_mod_summer_recons);
+mean_P_mod_winter_recons=mean(P_mod_winter_recons);
+mean_T_mod_summer_recons=mean(T_mod_winter_recons);
+mean_T_mod_winter_recons=mean(T_mod_winter_recons);
+mean_RH_mod_recons=mean(RH_mod_recons);
+sigma_P_mod_summer_recons=[mean_P_mod_summer_recons-std(P_mod_summer_recons)...
+     mean_P_mod_summer_recons+std(P_mod_summer_recons)];
+sigma_P_mod_winter_recons=[mean_P_mod_winter_recons-std(P_mod_winter_recons)...
+     mean_P_mod_winter_recons+std(P_mod_winter_recons)];
+sigma_T_mod_summer_recons=[mean_T_mod_summer_recons-std(mean_T_mod_summer_recons)...
+     mean_T_mod_summer_recons+std(mean_T_mod_summer_recons)];
+sigma_T_mod_winter_recons=[mean_T_mod_winter_recons-std(mean_T_mod_winter_recons)...
+     mean_T_mod_winter_recons+std(mean_T_mod_winter_recons)];
+sigma_RH_mod_recons=[mean_RH_mod_recons-std(RH_mod_recons)...
+     mean_RH_mod_recons+std(RH_mod_recons)];
+
+figure;hold;
+
+subplot(5,2,1)
 ksdensity(P_mod_summer_recons)
+xline(mean(P_mod_summer_recons))
+xline(mean(P_mod_summer_recons)+std(P_mod_summer_recons))
+xline(mean(P_mod_summer_recons)-std(P_mod_summer_recons))
 xlim([-0.5 0.5])
-title('Summer precip')
+title('Summer precip modification')
 
-subplot(5,1,2)
+subplot(5,2,2)
+cdfplot(P_mod_summer_recons)
+xlim([-0.5 0.5])
+title('Summer precip modification ECDF')
+
+subplot(5,2,3)
 ksdensity(P_mod_winter_recons)
+xline(mean(P_mod_winter_recons))
+xline(mean(P_mod_winter_recons)+std(P_mod_winter_recons))
+xline(mean(P_mod_winter_recons)-std(P_mod_winter_recons))
 xlim([-0.5 0.5])
-title('Winter precip')
+title('Winter precip modification')
 
-subplot(5,1,3)
-ksdensity(T_mod_summer_recons)
-xlim([-4 4])
-title('Temp summer')
+subplot(5,2,4)
+cdfplot(P_mod_winter_recons)
+xlim([-0.5 0.5])
+title('Winter precip modification ECDF')
 
-subplot(5,1,4)
+subplot(5,2,5)
 ksdensity(T_mod_winter_recons)
+xline(mean(T_mod_winter_recons))
+xline(mean(T_mod_winter_recons)+std(T_mod_winter_recons))
+xline(mean(T_mod_winter_recons)-std(T_mod_winter_recons))
 xlim([-4 4])
-title('Temp winter')
+title('Temp winter modification (^{o}C)')
 
-subplot(5,1,5)
+subplot(5,2,6)
+cdfplot(T_mod_winter_recons)
+xlim([-4 4])
+title('Temp winter modification (^{o}C) ECDF')
+
+subplot(5,2,7)
+ksdensity(T_mod_summer_recons)
+xline(mean(T_mod_summer_recons))
+xline(mean(T_mod_summer_recons)+std(T_mod_summer_recons))
+xline(mean(T_mod_summer_recons)-std(T_mod_summer_recons))
+xlim([-4 4])
+title('Temp summer modification (^{o}C)')
+
+subplot(5,2,8)
+cdfplot(T_mod_summer_recons)
+xlim([-4 4])
+title('Temp summer modification (^{o}C) ECDF')
+
+subplot(5,2,9)
 ksdensity(RH_mod_recons)
+xline(mean(RH_mod_recons))
+xline(mean(RH_mod_recons)+std(RH_mod_recons))
+xline(mean(RH_mod_recons)-std(RH_mod_recons))
 xlim([-0.5 0.5])
-title('RH')
+title('RH modification')
+
+subplot(5,2,10)
+cdfplot(RH_mod_recons)
+xlim([-0.5 0.5])
+title('RH modification')
+
+%% all centered climate 
+load('D:\MCres_Castor\20thCentReconstResults(loopsClim&Uncert)\V_3\MCres_recons_ClimMDaragTiming_31October_2020_08 09_i=1000.mat')
+P_mod_summer_recons=results.P_mod_summer_v;
+P_mod_winter_recons=results.P_mod_winter_v;
+RH_mod_recons=results.RH_mod_v;
+figure;hold;
+T_mod_summer_range=[-2 2];
+T_mod_winter_range=[-2 2];
+
+T_mod_summer_mu=mean(T_mod_summer_range);
+T_mod_summer_sigma=(T_mod_summer_range(2)-T_mod_summer_mu)/2;
+
+T_mod_winter_mu=mean(T_mod_winter_range);
+T_mod_winter_sigma=(T_mod_winter_range(2)-T_mod_winter_mu)/2;
+
+T_mod_summer_recons=T_mod_summer_mu+randn(1000,1)*T_mod_summer_sigma;
+
+T_mod_winter_recons=T_mod_winter_mu+randn(1000,1)*T_mod_winter_sigma;
+
+
+subplot(5,2,1)
+ksdensity(P_mod_summer_recons)
+xline(mean(P_mod_summer_recons))
+xline(mean(P_mod_summer_recons)+std(P_mod_summer_recons))
+xline(mean(P_mod_summer_recons)-std(P_mod_summer_recons))
+xlim([-0.5 0.5])
+title('Summer precip modification')
+
+subplot(5,2,3)
+ksdensity(P_mod_winter_recons)
+xline(mean(P_mod_winter_recons))
+xline(mean(P_mod_winter_recons)+std(P_mod_winter_recons))
+xline(mean(P_mod_winter_recons)-std(P_mod_winter_recons))
+xlim([-0.5 0.5])
+title('Winter precip modification')
+
+subplot(5,2,5)
+ksdensity(T_mod_winter_recons)
+xline(mean(T_mod_winter_recons))
+xline(mean(T_mod_winter_recons)+std(T_mod_winter_recons))
+xline(mean(T_mod_winter_recons)-std(T_mod_winter_recons))
+xlim([-4 4])
+title('Temp winter modification (^{o}C)')
+
+subplot(5,2,7)
+ksdensity(T_mod_summer_recons)
+xline(mean(T_mod_summer_recons))
+xline(mean(T_mod_summer_recons)+std(T_mod_summer_recons))
+xline(mean(T_mod_summer_recons)-std(T_mod_summer_recons))
+xlim([-4 4])
+title('Temp summer modification (^{o}C)')
+
+subplot(5,2,9)
+ksdensity(RH_mod_recons)
+xline(mean(RH_mod_recons))
+xline(mean(RH_mod_recons)+std(RH_mod_recons))
+xline(mean(RH_mod_recons)-std(RH_mod_recons))
+xlim([-0.5 0.5])
+title('RH modification')
