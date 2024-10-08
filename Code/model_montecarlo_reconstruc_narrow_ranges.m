@@ -5,7 +5,7 @@ tic
 % calibrationResults20thCentUncertCalib.m
 load('../Data/uncertainty_final.mat');
 
-clim=create20thCenturyClimate_();
+clim=create20thCenturyClimate_Spinup_24(0);
 final_20thCentYear=clim(end,3);
 years_clim=(clim(1,3):clim(end,3))';
 n_spinupyears=20; %number of years average climate spinup of the model
@@ -99,7 +99,7 @@ for i_MC = 1 : ni_MC
     results.RH_mod_v(i_MC)=RH_mod;
     
     yearly_P_seasonality=calc_yearly_P_seasonality_indep(P_mod_summer,P_mod_winter,climate);
-    ModelCastorContinuousClimDaily_20thCenturyClimMC_ReconstLoops;
+    ModelCastorContClimDaily_20thCenturyClimMC_ReconstLoops_24;
     
     results.daily_LD_mm(:,i_MC)=daily_LDv_mm;
     results.daily_dl(:,i_MC)=daily_dl;
@@ -128,7 +128,7 @@ for i_MC = 1 : ni_MC
     
     i_MC
 
-    climate=create20thCenturyClimate_Spinup_20thCent_RandYrBlocks(n_spinupyears,n_reps);
+    climate=create20thCenturyClimate_Spinup_20thCent_RandYrBlocks_24(n_spinupyears,n_reps);
 end
 
 total_years=size(results.trail_avg_year_summer_arag,1);

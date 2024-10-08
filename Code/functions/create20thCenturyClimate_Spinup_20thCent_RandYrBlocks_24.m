@@ -1,10 +1,8 @@
 function climate=create20thCenturyClimate_Spinup_20thCent_RandYrBlocks_24(n_spinupyears,n_reps)
 
-%load('G:\My Drive\lake_model\LakeModel2\FinalClimateCompilation\climateCompilation20thCent')
-load('climateCompilation20thCent_24.mat')
+load('../Data/climateCompilation20thCent_24.mat')
 
-%load('G:\My Drive\lake_model\LakeModel2\Castor\climate_avgYr.mat')
-load('climate_avgYr.mat')
+load('../Data/climate_avgYr.mat')
 
 %% fill RH
 %use model to predict rh
@@ -16,7 +14,7 @@ climate_20thCent=[final_pt,rh_20thCent];
 %% fill Rs data
 %create 20th century insolation (Rs) by looping measured data
 
-Rs20thCentloopedwholes=readmatrix('Rs_20thCent_looped_w_holes_24.csv');
+Rs20thCentloopedwholes=readmatrix('../Data/Rs_20thCent_looped_w_holes_24.csv');
 Rs=fillmissing(Rs20thCentloopedwholes(:,4),'linear');
 climate_20thCent(:,7)=Rs;
 
