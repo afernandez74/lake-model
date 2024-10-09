@@ -272,7 +272,7 @@ xlim([-0.5 0.5])
 title('RH modification')
 
 %% all centered climate 
-load('D:\MCres_Castor\20thCentReconstResults(loopsClim&Uncert)\V_3\MCres_recons_ClimMDaragTiming_31October_2020_08 09_i=1000.mat')
+load('../Results/MCres_recons_ClimMDaragTiming(narrowClimRanges_seasonalTemp)_09October_2024_12 32_i=1000')
 P_mod_summer_recons=results.P_mod_summer_v;
 P_mod_winter_recons=results.P_mod_winter_v;
 RH_mod_recons=results.RH_mod_v;
