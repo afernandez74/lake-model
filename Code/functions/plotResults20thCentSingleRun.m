@@ -20,7 +20,7 @@ legend({'Modeled Daily Water Depth','Measured Lake Depth (levelogger)','Estimate
 %%
 figure
 
-% plot(dates_clim,daily_d18O_aragonite,'k--','LineWidth',0.1)
+plot(dates_clim,daily_d18O_aragonite,'k--','LineWidth',0.001)
 hold
 plot(dates_core,movmean(d18O_core(:,2),[10 0]),'b.-','MarkerSize',20,'LineWidth',0.3)
 plot(dates_clim_years,year_summer_arag,'r--','LineWidth',0.1)
@@ -62,4 +62,4 @@ plot(dates_sat,LLsat(:,4),'.','Markersize',10)
 
 legend({'Modeled Daily Water Depth','Measured Lake Depth (levelogger)','Estimated Lake Level (satelite images)'},...
     'FontSize', 15,'Location','southeast')
-xlim([datetime(2005,7,1) dates_obs(end)])
+%xlim([datetime(2005,7,1) dates_obs(end)])

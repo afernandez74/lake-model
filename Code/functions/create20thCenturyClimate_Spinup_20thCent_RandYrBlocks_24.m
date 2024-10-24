@@ -25,6 +25,7 @@ predicted_tw_uncert(predicted_tw<1)=1;
 
 Tw_20thCent=[predicted_tw_uncert;castor_tw(:,4)];
 climate_20thCent(:,8)=Tw_20thCent;
+
 %% create spin-up time avg climate data 
 spinupyears=(climate_20thCent(1,3)-n_spinupyears : climate_20thCent(1,3)-1)';
 dates_spinup=(datetime(spinupyears(1),1,1):datetime(climate_20thCent(1,3),climate_20thCent(1,2),climate_20thCent(1,1))-1)';
@@ -50,7 +51,7 @@ climate_20thCent=climate_20thCent(climate_20thCent(:,3) > climate_20thCent(1,3) 
 
 %% re-order climate dataset in 10yr blocks
 blocks=[1900 1909; 1910 1919; 1920 1929;1930 1939;1940 1949;1950 1959;...
-    1960 1969;1970 1979;1980 1989;1990 1999;2000 2009;2010 2018];
+    1960 1969;1970 1979;1980 1989;1990 1999;2000 2009;2010 2021];
 
 blocks_rand = blocks(randperm(size(blocks,1)),:);
 blocks_rand = repmat(blocks_rand,n_reps,1);

@@ -3,7 +3,7 @@ clear
 tic
 % created from 20th century uncertainty calibration in
 % calibrationResults20thCentUncertCalib.m
-load('../Data/uncertainty_final.mat');
+load('../Data/uncertainty_final_24.mat');
 
 clim=create20thCenturyClimate_Spinup_24(0);
 final_20thCentYear=clim(end,3);
@@ -21,10 +21,10 @@ C_IN=0.001;
 AWC_mod=1.87;
 
 P_summer_range=[-0.4    0.4];
-P_winter_range=[-0.4    0.0];
-T_mod_summer_range=[0 2];
-T_mod_winter_range=[-3 1];
-RH_range=[-0.3  0.0];
+P_winter_range=[-0.4    0.4];
+T_mod_summer_range=[-2 2];
+T_mod_winter_range=[-2 2];
+RH_range=[-0.3  0.3];
 
 P_mod_summer_mu=mean(P_summer_range);
 P_mod_summer_sigma=(P_summer_range(2)-P_mod_summer_mu)/2;
@@ -87,10 +87,8 @@ for i_MC = 1 : ni_MC
     results.summer_len_v(i_MC)=summer_len;
     
     P_mod_summer=(P_mod_summer_mu+randn*P_mod_summer_sigma);
-    results.P_mod_summer_v(i_MC)=P_mod_summer;
     
     P_mod_winter=(P_mod_winter_mu+randn*P_mod_winter_sigma);
-    results.P_mod_winter_v(i_MC)=P_mod_winter;
     
     T_mod_summer=T_mod_summer_mu+randn*T_mod_summer_sigma;
     results.T_mod_summer_v(i_MC)=T_mod_summer;
@@ -103,6 +101,9 @@ for i_MC = 1 : ni_MC
     
     yearly_P_seasonality=calc_yearly_P_seasonality_indep(P_mod_summer,P_mod_winter,climate);
     ModelCastorContClimDaily_20thCenturyClimMC_ReconstLoops_24;
+
+    results.P_mod_summer_v(i_MC)=mean(yearly_P_seasonality(:,5));
+    results.P_mod_winter_v(i_MC)=mean(yearly_P_seasonality(:,6));
     
     results.daily_LD_mm(:,i_MC)=daily_LDv_mm;
     results.daily_dl(:,i_MC)=daily_dl;
@@ -143,13 +144,13 @@ yearsi=year(dates_years);
 results.mean_arag_spinup=mean(results.year_summer_arag(1:n_spinupyears,:),1);
 % results.mean_arag_20thCent=mean(results.year_arag(n_spinupyears+20:end,:),1);
 results.mean_arag_20thCent=mean(results.year_summer_arag(n_spinupyears+20:find(yearsi==2018),:),1);
-results.mean_arag_no_mod=mean(results.year_summer_arag(find(yearsi==2018)+20:find(yearsi==floor(mean([2018 2256]))),:),1);
-results.mean_arag_mod=mean(results.year_summer_arag(find(yearsi==floor(mean([2018 2256])))+20:end,:),1);
+results.mean_arag_no_mod=mean(results.year_summer_arag(find(yearsi==2021)+20:find(yearsi==floor(mean([2021 2256]))),:),1);
+results.mean_arag_mod=mean(results.year_summer_arag(find(yearsi==floor(mean([2021 2256])))+20:end,:),1);
 
 %% stuff for naming file
 
 
-filename=strcat('../../Results/MCres_recons_ClimMDaragTiming'...
+filename=strcat('../Results/MCres_recons_ClimMDaragTiming'...
     ,datestr(now,'_ddmmmm_yyyy_HH MM'),'_i=',num2str(ni_MC),'.mat');
 
 
