@@ -22,9 +22,9 @@ load('../Data/SUG_TRWdata_20thCent.mat');
 dates_SUG=datetime(SUG_TRWdata_20thCent(:,1),07,01);
 
 %load monte carlo simulation results 
-load('../Results/MCres_recons_ClimMDaragTiming_21October_2024_12 42_i=1000.mat')
+load('../Results/MCres_recons_ClimMDaragTiming_28October_2024_11 56_i=1000OG.mat')
 results1=results;
-load('../Results/MCres_recons_ClimMDaragTiming(narrowClimRanges_seasonalTemp)_21October_2024_16 04_i=1000.mat')
+load('../Results/MCres_recons_ClimMDaragTiming(narrowClimRanges_seasonalTemp)_28October_2024_15 20_i=1000OG')
 results2=results;
 clear 'results'
 %%
@@ -184,14 +184,68 @@ grid on
 title ({'Castor Lake Modeled and Observed Sediment \delta ^{18} O';'and TRW from SUG over the 20th Century'},'FontSize',30)
 
 %%
-% figure 
-% hold
-% 
-% for i=1:size(results1.MD_max_v,2)
-%     plot(results1.dates,results1.daily_dl(:,i),'LineWidth',0.1);
-% end
-% 
-% plot(dates_samples,d18O_samples(:,4),'o','MarkerSize',10,'MarkerEdgeColor','red','MarkerFaceColor',[1 .6 .6])
-% ax=gca;
-% ax.FontSize=20;
-% ax.XMinorTick = 'off';
+
+P_mod_summer_all = [results1.P_mod_summer_v results2.P_mod_summer_v];
+P_mod_summer_all(:,cols_w_nan)=[];
+P_mod_summer_all_recons = P_mod_summer_all(pos_good_recons);
+
+P_mod_winter_all = [results1.P_mod_winter_v results2.P_mod_winter_v];
+P_mod_winter_all(:,cols_w_nan)=[];
+P_mod_winter_all_recons = P_mod_winter_all(pos_good_recons);
+
+T_mod_summer_all = [results1.T_mod_summer_v results2.T_mod_summer_v];
+T_mod_summer_all(:,cols_w_nan)=[];
+T_mod_summer_all_recons = T_mod_summer_all(pos_good_recons);
+
+T_mod_winter_all = [results1.T_mod_winter_v results2.T_mod_winter_v];
+T_mod_winter_all(:,cols_w_nan)=[];
+T_mod_winter_all_recons = T_mod_winter_all(pos_good_recons);
+
+RH_mod_all = [results1.RH_mod_v results2.RH_mod_v];
+RH_mod_all(:,cols_w_nan)=[];
+RH_mod_all_recons = RH_mod_all(pos_good_recons);
+
+figure;hold;
+
+subplot(5,2,1)
+ksdensity(P_mod_summer_all_recons)
+xline(mean(P_mod_summer_all_recons))
+xline(mean(P_mod_summer_all_recons)+std(P_mod_summer_all_recons))
+xline(mean(P_mod_summer_all_recons)-std(P_mod_summer_all_recons))
+xlim([-1.0 1.0])
+title('Summer precip modification')
+
+
+subplot(5,2,3)
+ksdensity(P_mod_winter_all_recons)
+xline(mean(P_mod_winter_all_recons))
+xline(mean(P_mod_winter_all_recons)+std(P_mod_winter_all_recons))
+xline(mean(P_mod_winter_all_recons)-std(P_mod_winter_all_recons))
+xlim([-0.5 0.5])
+title('Winter precip modification')
+
+subplot(5,2,7)
+ksdensity(T_mod_summer_all_recons)
+xline(mean(T_mod_summer_all_recons))
+xline(mean(T_mod_summer_all_recons)+std(T_mod_summer_all_recons))
+xline(mean(T_mod_summer_all_recons)-std(T_mod_summer_all_recons))
+xlim([-4 4.0])
+title('Temp summer modification (^{o}C)')
+
+subplot(5,2,5)
+ksdensity(T_mod_winter_all_recons)
+xline(mean(T_mod_winter_all_recons))
+xline(mean(T_mod_winter_all_recons)+std(T_mod_winter_all_recons))
+xline(mean(T_mod_winter_all_recons)-std(T_mod_winter_all_recons))
+xlim([-4 4])
+title('Temp winter modification (^{o}C)')
+
+
+
+subplot(5,2,9)
+ksdensity(RH_mod_all_recons)
+xline(mean(RH_mod_all_recons))
+xline(mean(RH_mod_all_recons)+std(RH_mod_all_recons))
+xline(mean(RH_mod_all_recons)-std(RH_mod_all_recons))
+xlim([-0.5 0.5])
+title('RH modification')
