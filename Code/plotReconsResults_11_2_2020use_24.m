@@ -24,7 +24,7 @@ dates_SUG=datetime(SUG_TRWdata_20thCent(:,1),07,01);
 %load monte carlo simulation results 
 load('../Results/MCres_recons_ClimMDaragTiming_28October_2024_11 56_i=1000OG.mat')
 results1=results;
-load('../Results/MCres_recons_ClimMDaragTiming(narrowClimRanges_seasonalTemp)_28October_2024_15 20_i=1000OG')
+load('../Results/MCres_recons_ClimMDaragTiming(narrowClimRanges_seasonalTemp)_30October_2024_10 37_i=1000OG.mat')
 results2=results;
 clear 'results'
 %%

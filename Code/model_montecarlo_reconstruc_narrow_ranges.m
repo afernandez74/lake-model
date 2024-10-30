@@ -21,19 +21,19 @@ C_IN=0.001;
 AWC_mod=1.87;
 
 P_mod_summer_mu=0.03;
-P_mod_summer_sigma=0.11;
+P_mod_summer_sigma=0.11*2;
 
 P_mod_winter_mu=-0.2;
-P_mod_winter_sigma=0.06;
+P_mod_winter_sigma=0.06*2;
 
 T_mod_summer_mu=0.8;
-T_mod_summer_sigma=1.4;
+T_mod_summer_sigma=1.4*2;
 
 T_mod_winter_mu=1.2;
-T_mod_winter_sigma=1.7;
+T_mod_winter_sigma=1.7*2;
 
 RH_mod_mu=-0.06;
-RH_mod_sigma=0.07;
+RH_mod_sigma=0.07*2;
 
 results.MD_max_v=NaN(1,ni_MC);
 results.summer_begin_v=NaN(1,ni_MC);
